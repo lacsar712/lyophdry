@@ -19,12 +19,15 @@ func NewSublimWindow(clk Clock, duration time.Duration) *SublimWindow {
 }
 
 func (w *SublimWindow) Active(anchor time.Time) bool {
-	return WindowElapsed(w.clk, anchor, w.duration)
+	return ProcessWindowOpen(w.clk, anchor, w.duration)
 }
 
 func (w *SublimWindow) Require(anchor time.Time) error {
-	if w.Active(anchor) {
+	if ProcessWindowOpen(w.clk, anchor, w.duration) {
 		return nil
+	}
+	if ProcessWindowClosed(w.clk, anchor, w.duration) {
+		return model.ErrCondHold
 	}
 	return model.ErrCondHold
 }

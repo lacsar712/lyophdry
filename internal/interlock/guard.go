@@ -40,3 +40,18 @@ func (g *Guard) ZonesFor(plenum model.PlenumID) []model.ZoneID {
 func (g *Guard) Register(zone model.ZoneID, plenum model.PlenumID) {
 	g.allowed[zone] = plenum
 }
+
+func classifyInterlock(err error) error {
+	if err == nil {
+		return nil
+	}
+	return model.Wrap("interlock", "permit_denied", err)
+}
+
+func (g *Guard) TripReport(tower model.TowerID, plenum model.PlenumID, celsius float64, trip error) error {
+	zone := model.ZoneID(tower.String() + "-zone-00")
+	if err := g.Permit(zone, plenum); err != nil {
+		return classifyInterlock(err)
+	}
+	return model.TripChain(tower.String(), celsius)
+}

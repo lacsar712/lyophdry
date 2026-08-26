@@ -70,6 +70,14 @@ func WaitUntilContext(ctx context.Context, clk Clock, target time.Time) error {
 	}
 }
 
+func ProcessWindowOpen(clk Clock, start time.Time, duration time.Duration) bool {
+	return WindowElapsed(clk, start, duration)
+}
+
+func ProcessWindowClosed(clk Clock, start time.Time, duration time.Duration) bool {
+	return WindowClosed(clk, start, duration)
+}
+
 func WindowElapsed(clk Clock, start time.Time, duration time.Duration) bool {
 	now := clk.Now()
 	end := start.Add(duration)

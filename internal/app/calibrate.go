@@ -17,12 +17,17 @@ func (a *App) CalibrateFeed(ctx context.Context, tower model.TowerID, holder str
 	if err := a.feedLeases.Require(tower, holder, 30*time.Second); err != nil {
 		return err
 	}
+	releaseHeld := true
+	defer func() {
+		if releaseHeld {
+			a.feedLeases.ReleaseHolder(tower, holder)
+		}
+	}()
 	if CalibrateProbe != nil {
 		if err := CalibrateProbe(ctx); err != nil {
-			a.feedLeases.ReleaseHolder(tower, holder)
 			return fmt.Errorf("calibrate: %w", err)
 		}
 	}
-	a.feedLeases.ReleaseHolder(tower, holder)
+	releaseHeld = false
 	return nil
 }
