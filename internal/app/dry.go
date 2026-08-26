@@ -27,6 +27,9 @@ func (r *LyoRamp) Ramp(ctx context.Context, target float64, apply func(float64))
 	}
 	cur := 0.0
 	for cur < target {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		cur += step
 		if cur > target {
 			cur = target
