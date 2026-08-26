@@ -16,7 +16,11 @@ func (a *App) ExecutePlan(ctx context.Context, plan SegmentPlan) error {
 	if a.scheduler == nil {
 		return nil
 	}
-	return a.scheduler.InstallVentPlanCtx(context.Background(), clock.VentPlan{VentSteps: plan.VentSteps}, "segment-plan")
+	// Propagate the caller's context (batch/HMI scope) into the coordination
+	// layer so a segment-revocation cancel reaches the scheduler. Substituting
+	// context.Background() here would sever the cancellation signal, leaving
+	// revoked ramp steps installed in the timeline.
+	return a.scheduler.InstallVentPlanCtx(ctx, clock.VentPlan{VentSteps: plan.VentSteps}, "segment-plan")
 }
 
 func (a *App) SegmentVentStepsDone() int {
