@@ -71,11 +71,12 @@ func WaitUntilContext(ctx context.Context, clk Clock, target time.Time) error {
 }
 
 func ProcessWindowOpen(clk Clock, start time.Time, duration time.Duration) bool {
-	return time.Since(start) < duration
+	now := clk.Now()
+	return !now.Before(start) && now.Before(start.Add(duration))
 }
 
 func ProcessWindowClosed(clk Clock, start time.Time, duration time.Duration) bool {
-	return time.Now().After(start.Add(duration))
+	return !clk.Now().Before(start.Add(duration))
 }
 
 func WindowElapsed(clk Clock, start time.Time, duration time.Duration) bool {
