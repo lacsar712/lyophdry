@@ -1,6 +1,6 @@
-# HookRelay
+# lyophdry
 
-Signed ingress + reliable outbound webhook delivery (retry, circuit breaker, rate limit, DLQ, replay).
+lyophdry 是一套制药冻干机搁板工业过程控制系统，用于升华加热、冷凝器协调与过程联锁。
 
 ## Requirements
 
