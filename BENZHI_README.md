@@ -1,6 +1,6 @@
 # lyophdry
 
-Pharmaceutical lyophilizer shelf freeze-dry cycle. No web UI.
+lyophdry 是一套制药冻干机搁板工业过程控制系统，用于升华加热、冷凝器协调与过程联锁。
 
 ## Requirements
 
