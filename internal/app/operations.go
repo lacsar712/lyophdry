@@ -16,7 +16,7 @@ func (a *App) ValidateMoldDrift(ctx context.Context, moistPct float64) error {
 	if moistPct <= limit {
 		return nil
 	}
-	return fmt.Errorf("moisture drift: %.1f", moistPct)
+	return fmt.Errorf("moisture drift: %.1f: %w", moistPct, model.ErrShelfDrift)
 }
 
 func (a *App) ConfirmBladderHold(ctx context.Context, anchor time.Time) error {
