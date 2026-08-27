@@ -27,9 +27,11 @@ func (f *LyoFSM) State() model.DryState { return f.state }
 func (f *LyoFSM) Dispatch(ctx context.Context, event string) (model.DryState, error) {
 	next, ok := allowedDry(f.state, event)
 	if !ok {
-		if f.hooks != nil {
-			_ = f.hooks.RunAfter(ctx, f.state, f.state, event)
-		}
+		// Illegal transition: no state change and no after-hooks. Running
+		// RunAfter here would fire drive side effects (e.g. the shelf-heat
+		// pulse registered via RegisterDryHeatHook) even though the FSM never
+		// left its current state — observed in production as an isolated
+		// heater pulse while the tower marker stayed in standby.
 		return f.state, fmt.Errorf("%s from %s: %w", event, f.state, ErrIllegalDryTransition)
 	}
 	from := f.state
