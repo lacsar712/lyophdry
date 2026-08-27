@@ -80,6 +80,9 @@ type LyoSnapshot struct {
 
 func CloneLyoSnapshot(s LyoSnapshot) LyoSnapshot {
 	out := LyoSnapshot{Tower: s.Tower}
-	out.Segments = s.Segments
+	if len(s.Segments) > 0 {
+		out.Segments = make([]SegmentSnapshot, len(s.Segments))
+		copy(out.Segments, s.Segments)
+	}
 	return out
 }
